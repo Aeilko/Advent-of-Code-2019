@@ -136,7 +136,7 @@ public class Solution {
 		System.out.println("Part 1 - Success");
 		System.out.println("Answer\t" + dist);
 
-		
+
 		TreeMap<Coordinate, Integer> pA = getPathPart2(a);
 		TreeMap<Coordinate, Integer> pB = getPathPart2(b);
 
