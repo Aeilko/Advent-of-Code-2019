@@ -1,5 +1,7 @@
 package day6;
 
+import com.sun.source.tree.Tree;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Scanner;
@@ -27,9 +29,29 @@ public class Solution {
 		}
 
 		System.out.println("Part 1 - Success");
-		System.out.println("Answer\t" + result);
+		System.out.println("Answer\t" + result + "\n");
 
+		// Find the "trace" of YOU and SAN and get intersection
+		TreeSet<String> traceYOU = getTrace("YOU", "COM", orbits);
+		TreeSet<String> traceSAN = getTrace("SAN", "COM", orbits);
 
+		// Find the highest object in the intersection
+		traceYOU.retainAll(traceSAN);
+		String maxObject = null;
+		int maxOrbits = -1;
+		for(String o: traceYOU){
+			if(orbitCount.get(o) > maxOrbits){
+				maxOrbits = orbitCount.get(o);
+				maxObject = o;
+			}
+		}
+
+		// The total number of steps is the number of steps of YOU to the highest object + the number of steps of SAN to the highest object
+		// Minus 2 because we don't have to count YOU and SAN themselves
+		int steps = (orbitCount.get("YOU")-maxOrbits) + (orbitCount.get("SAN")-maxOrbits) -2;
+
+		System.out.println("Part 2 - Success");
+		System.out.println("Answer\t" + steps);
 	}
 
 	public static TreeMap<String, TreeSet<String>> inputToOrbits(String[] input){
@@ -54,6 +76,31 @@ public class Solution {
 			TreeSet<String> subs = orbits.get(curObject);
 			for (String s : subs) {
 				countOrbits(s, curCount + 1, orbits, orbitCounts);
+			}
+		}
+	}
+
+	public static TreeSet<String> getTrace(String target, String current, TreeMap<String, TreeSet<String>> orbits){
+		if(target.equals(current)){
+			TreeSet<String> result = new TreeSet<>();
+			result.add(current);
+			return result;
+		}
+		else{
+			if(orbits.containsKey(current)){
+				TreeSet<String> objects = orbits.get(current);
+				TreeSet<String> result = null;
+				for(String o: objects){
+					TreeSet<String> tmp = getTrace(target, o, orbits);
+					if(tmp != null){
+						tmp.add(current);
+						result = tmp;
+					}
+				}
+				return result;
+			}
+			else{
+				return null;
 			}
 		}
 	}
