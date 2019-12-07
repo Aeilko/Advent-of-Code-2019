@@ -15,6 +15,9 @@ public class IntcodeComputer {
 	// Number of parameters per intcode
 	private int[] params;
 
+	// Whether the computer should show anything but output
+	private boolean silent = false;
+
 	public IntcodeComputer(int[] s){
 		this.stack = s.clone();
 
@@ -26,12 +29,12 @@ public class IntcodeComputer {
 		p[7] = p[8] = 3;
 
 		this.params = p;
-
-		// Prepare scanner
-		this.in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
 	}
 
 	public void run() throws Exception{
+		// Prepare scanner
+		this.in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+
 		int i = 0;
 		run: while(i < this.stack.length){
 			// Split instruction into digits
@@ -61,7 +64,8 @@ public class IntcodeComputer {
 					stack[stack[i+3]] = resolveParamValue(modes[0], stack[i+1]) * resolveParamValue(modes[1], stack[i+2]);
 					break;
 				case 3:
-					System.out.print("Input integer: ");
+					if(!this.silent)
+						System.out.print("Input integer: ");
 					stack[stack[i+1]] = this.in.nextInt();
 					break;
 				case 4:
@@ -123,5 +127,9 @@ public class IntcodeComputer {
 
 	public int[] getStack(){
 		return this.stack.clone();
+	}
+
+	public void setSilent(){
+		this.silent = true;
 	}
 }
