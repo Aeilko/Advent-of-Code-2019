@@ -1,10 +1,10 @@
 package day7;
 
-import utils.IntcodeComputer;
 import utils.IntcodeComputerThread;
 import utils.Permutations;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -30,31 +30,17 @@ public class Solution {
 			ogStack[i] = Integer.parseInt(sep[i]);
 		}
 
-		int result = part1(ogStack);
+		int result = runAllPermutations(ogStack, SETTINGS_PART1);
 		System.out.println("Part 1 - Success");
 		System.out.println("Answer\t" + result + "\n");
 
-		result = part2(ogStack);
+		result = runAllPermutations(ogStack, SETTINGS_PART2);
 		System.out.println("Part 2 - Success");
 		System.out.println("Answer\t" + result);
 	}
 
-	// TODO: Rewrite part 1 to use the BlockedQueueArray instead of overwriting System.in and out.
-	public static int part1(int[] program){
-		ArrayList<int[]> perms = Permutations.getAll(SETTINGS_PART1);
-
-		int max = 0;
-		for(int i = 0; i < perms.size(); i++) {
-			int result = runIntcodeSettings(perms.get(i), program);
-			if(result > max)
-				max = result;
-		}
-
-		return max;
-	}
-
-	public static int part2(int[] program){
-		ArrayList<int[]> perms = Permutations.getAll(SETTINGS_PART2);
+	public static int runAllPermutations(int[] program, int[] setting){
+		ArrayList<int[]> perms = Permutations.getAll(setting);
 
 		int max = 0;
 		for(int i = 0; i < perms.size(); i++) {
@@ -64,48 +50,6 @@ public class Solution {
 		}
 
 		return max;
-	}
-
-	public static int runIntcodeSettings(int[] setting, int[] program){
-		IntcodeComputer[] ics = new IntcodeComputer[setting.length];
-
-		for(int i = 0; i < ics.length; i++){
-			ics[i] = new IntcodeComputer(program);
-			ics[i].setSilent();
-		}
-
-		int set;
-		int val = 0;
-		for(int i = 0; i < ics.length; i++){
-			set = setting[i];
-
-			// Overwrite System.in settings
-			InputStream normalIn = System.in;
-			String input = set + " " + val;
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
-			System.setIn(inputStream);
-
-			// Overwrite System.out to catch output
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			PrintStream ps = new PrintStream(baos);
-			PrintStream normalOut = System.out;
-			System.setOut(ps);
-
-			try {
-				ics[i].run();
-				val = Integer.parseInt(baos.toString().strip());
-			}
-			catch (Exception e){
-				System.err.println("Error");
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-			// Reset System.in and System.out
-			System.setIn(normalIn);
-			System.setOut(normalOut);
-		}
-
-		return val;
 	}
 
 	public static int runThreadedIntcodeSetting(int[] setting, int[] program){
