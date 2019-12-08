@@ -1,5 +1,7 @@
 package day2;
 
+import utils.IntcodeComputer;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Scanner;
@@ -14,25 +16,6 @@ public class Solution {
 
 	public static final String INPUT = "1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,1,6,19,1,19,6,23,2,23,6,27,2,6,27,31,2,13,31,35,1,9,35,39,2,10,39,43,1,6,43,47,1,13,47,51,2,6,51,55,2,55,6,59,1,59,5,63,2,9,63,67,1,5,67,71,2,10,71,75,1,6,75,79,1,79,5,83,2,83,10,87,1,9,87,91,1,5,91,95,1,95,6,99,2,10,99,103,1,5,103,107,1,107,6,111,1,5,111,115,2,115,6,119,1,119,6,123,1,123,10,127,1,127,13,131,1,131,2,135,1,135,5,0,99,2,14,0,0";
 
-	public static int[] part1(int[] stack) throws Exception{
-		run: for (int i = 0; i < stack.length; i += 4) {
-			switch (stack[i]) {
-				case 1:
-					stack[stack[i+3]] = stack[stack[i+1]]+stack[stack[i+2]];
-					break;
-				case 2:
-					stack[stack[i+3]] = stack[stack[i+1]]*stack[stack[i+2]];
-					break;
-				case 99:
-					break run;
-				default:
-					throw new Exception("Intcode ["+i+"]: " + stack[i]);
-			}
-		}
-
-		return stack;
-	}
-
 	public static int[] part2(int[] stack){
 
 		outer: for(int i = 0; i < 100; i++){
@@ -41,7 +24,9 @@ public class Solution {
 				result[1] = i;
 				result[2] = j;
 				try {
-					result = part1(result);
+					IntcodeComputer ic = new IntcodeComputer(result);
+					ic.run();
+					result = ic.getStack();
 
 					if(result[0] == PART2)
 						return result;
@@ -76,12 +61,13 @@ public class Solution {
 			int[] stack = ogStack.clone();
 			stack[1] = PART1_X;
 			stack[2] = PART1_Y;
-			stack = part1(stack);
+			IntcodeComputer ic = new IntcodeComputer(stack);
+			ic.run();
+			stack = ic.getStack();
 			System.out.println("Part 1 - Success");
-			System.out.println("Answer\t" + stack[0]);
+			System.out.println("Answer\t" + stack[0] + "\n");
 
 			// Perform part 2 (brute force values)
-			System.out.println();
 			stack = part2(ogStack.clone());
 			if(stack == null){
 				System.out.println("Could not find noun and verb");
