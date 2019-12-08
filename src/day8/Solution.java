@@ -1,6 +1,11 @@
 package day8;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
@@ -22,6 +27,7 @@ public class Solution {
 		int[] result = part2(input, 25, 6);
 		System.out.println("Part 2 - Success");
 		displayImage(result, 25, 6);
+		renderImage(result, 25, 6);
 	}
 
 	public static int part1(String input, int x, int y){
@@ -93,6 +99,32 @@ public class Solution {
 					System.out.print(" ");
 			}
 			System.out.print("\n");
+		}
+	}
+
+	public static void renderImage(int[] pixels, int x, int y){
+		int blackRGB = Color.BLACK.getRGB();
+		int whiteRGB = Color.WHITE.getRGB();
+
+		BufferedImage image = new BufferedImage(x*10, y*10, BufferedImage.TYPE_INT_ARGB);
+
+		for(int i = 0; i < y*10; i++){
+			for(int j = 0; j < x*10; j++){
+				if(pixels[((i/10)*x + (j/10))] == 1)
+					image.setRGB(j, i, blackRGB);
+				else
+					image.setRGB(j, i, whiteRGB);
+			}
+		}
+
+		// Save image
+		File out = new File("src/day8/output.png");
+		try {
+			ImageIO.write(image, "png", out);
+		}
+		catch(IOException e){
+			System.err.println("Error saving image");
+			System.out.println(e.getMessage());
 		}
 	}
 }
