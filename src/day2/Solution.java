@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
+// TODO: Rewrite solution to use the IntcodeComputer class
 public class Solution {
 
 	public static final int PART1_X = 12;

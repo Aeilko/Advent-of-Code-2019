@@ -18,6 +18,10 @@ public class Solution {
 
 		System.out.println("Part 1 - Success");
 		System.out.println("Answer\t" + res);
+
+		int[] result = part2(input, 25, 6);
+		System.out.println("Part 2 - Success");
+		displayImage(result, 25, 6);
 	}
 
 	public static int part1(String input, int x, int y){
@@ -56,5 +60,39 @@ public class Solution {
 		}
 
 		return ones*twos;
+	}
+
+	public static int[] part2(String input, int x, int y){
+		int[] result = new int[x*y];
+		for(int i = 0; i < result.length; i++)
+			result[i] = 2;
+
+		int pixelsPerLayer = x*y;
+		int totalLength = input.length();
+		int layers = totalLength/pixelsPerLayer;
+		for(int i = 0; i < layers; i++){
+			for(int j = 0; j < pixelsPerLayer; j++){
+				int pixel = pixelsPerLayer*i + j;
+				if(result[j] == 2){
+					if(input.charAt(pixel) != '2'){
+						result[j] = Integer.parseInt(""+input.charAt(pixel));
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+	public static void displayImage(int[] pixels, int x, int y){
+		for(int i = 0; i < y; i++){
+			for(int j = 0; j < x; j++){
+				if(pixels[(i*x + j)] == 1)
+					System.out.print("#");
+				else
+					System.out.print(" ");
+			}
+			System.out.print("\n");
+		}
 	}
 }

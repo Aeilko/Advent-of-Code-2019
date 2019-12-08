@@ -39,6 +39,7 @@ public class Solution {
 		System.out.println("Answer\t" + result);
 	}
 
+	// TODO: Rewrite part 1 to use the BlockedQueueArray instead of overwriting System.in and out.
 	public static int part1(int[] program){
 		ArrayList<int[]> perms = Permutations.getAll(SETTINGS_PART1);
 
