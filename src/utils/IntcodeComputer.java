@@ -1,16 +1,13 @@
 package utils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class IntcodeComputer {
 
 	// The stack used by this Intcode computer
 	private int[] stack;
-
-	// Scanner for input
-	private Scanner in;
 
 	// Number of parameters per intcode
 	private int[] params;
@@ -18,8 +15,23 @@ public class IntcodeComputer {
 	// Whether the computer should show anything but output
 	private boolean silent = false;
 
+	// Which input & output mode tho use. 1 = System, 2 = BlockingQueue
+	private int inputMode;
+
+	// Potential input scanner
+	Scanner in;
+
+	// Potential input and output arrays
+	ArrayBlockingQueue<Integer> inArray;
+	ArrayBlockingQueue<Integer> outArray;
+
 	public IntcodeComputer(int[] s){
+		this(s, 1);
+	}
+
+	public IntcodeComputer(int[] s, int mode){
 		this.stack = s.clone();
+		this.inputMode = mode;
 
 		// Make sure we include intcode 99, although it has not parameters
 		int[] p = new int[100];
@@ -33,7 +45,8 @@ public class IntcodeComputer {
 
 	public void run() throws Exception{
 		// Prepare scanner
-		this.in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+		if(this.inputMode == 1)
+			this.in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
 
 		int i = 0;
 		run: while(i < this.stack.length){
@@ -64,12 +77,10 @@ public class IntcodeComputer {
 					stack[stack[i+3]] = resolveParamValue(modes[0], stack[i+1]) * resolveParamValue(modes[1], stack[i+2]);
 					break;
 				case 3:
-					if(!this.silent)
-						System.out.print("Input integer: ");
-					stack[stack[i+1]] = this.in.nextInt();
+					stack[stack[i+1]] = this.getInput();
 					break;
 				case 4:
-					System.out.println(resolveParamValue(modes[0], stack[i+1]));
+					this.setOutput(resolveParamValue(modes[0], stack[i+1]));
 					break;
 				case 5:
 					if(resolveParamValue(modes[0], stack[i+1]) != 0){
@@ -107,6 +118,32 @@ public class IntcodeComputer {
 		}
 	}
 
+	private int getInput() throws InterruptedException {
+		int result = 0;
+
+		if(this.inputMode == 2){
+			result = this.inArray.take();
+		}
+		else{
+			// inputMode == 1
+			if(!this.silent)
+				System.out.print("Input integer: ");
+			result = in.nextInt();
+		}
+
+		return result;
+	}
+
+	private void setOutput(int out) throws InterruptedException {
+		if(this.inputMode == 2){
+			this.outArray.put(out);
+		}
+		else{
+			// inputMode == 1
+			System.out.println(out);
+		}
+	}
+
 	private int resolveParamValue(int mode, int val){
 		//System.out.print("Resolve \t" + mode +"\t" + val);
 		int result = 0;
@@ -131,5 +168,13 @@ public class IntcodeComputer {
 
 	public void setSilent(){
 		this.silent = true;
+	}
+
+	public void setInputArray(ArrayBlockingQueue in){
+		this.inArray = in;
+	}
+
+	public void setOutputArray(ArrayBlockingQueue out){
+		this.outArray = out;
 	}
 }
