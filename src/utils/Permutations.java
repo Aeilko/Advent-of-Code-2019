@@ -6,8 +6,6 @@ public class Permutations {
 
 	/**
 	 * Borrowed from: https://www.baeldung.com/java-array-permutations
-	 * @param input
-	 * @return
 	 */
 	public static ArrayList<int[]> getAll(int[] input){
 		int n = input.length;

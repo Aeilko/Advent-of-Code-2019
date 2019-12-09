@@ -146,7 +146,6 @@ public class Solution {
 		dist = Integer.MAX_VALUE;
 		for(Coordinate c: intersect){
 			int d = pA.get(c) + pB.get(c);
-			//System.out.println(pA.get(c) + " " + pB.get(c));
 			if(d < dist)
 				dist = d;
 		}

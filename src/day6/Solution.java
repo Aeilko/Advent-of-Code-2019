@@ -37,12 +37,10 @@ public class Solution {
 
 		// Find the highest object in the intersection
 		traceYOU.retainAll(traceSAN);
-		String maxObject = null;
 		int maxOrbits = -1;
 		for(String o: traceYOU){
 			if(orbitCount.get(o) > maxOrbits){
 				maxOrbits = orbitCount.get(o);
-				maxObject = o;
 			}
 		}
 

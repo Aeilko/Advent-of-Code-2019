@@ -30,7 +30,7 @@ public class IntcodeComputerThread extends Thread {
 			this.ic.run();
 		}
 		catch(Exception e){
-			System.err.println("Error in IntcodeComputerThread");
+			System.err.println("Error while running IntcodeComputerThread");
 			System.out.println(e.getMessage());
 		}
 	}

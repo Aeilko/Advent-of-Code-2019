@@ -43,6 +43,7 @@ public class Solution {
 		IntcodeComputerThread[] ics = new IntcodeComputerThread[setting.length];
 		ArrayBlockingQueue<Long>[] inputs = new ArrayBlockingQueue[setting.length];
 
+		// Initialize all machines and link their inputs and outputs
 		for(int i = 0; i < ics.length; i++){
 			ics[i] = new IntcodeComputerThread(program);
 			inputs[i] = new ArrayBlockingQueue<>(64);
@@ -58,22 +59,21 @@ public class Solution {
 		}
 		ics[setting.length-1].setOutputArray(inputs[0]);
 
+		// Run all machines
 		for(int i = 0; i < ics.length; i++){
 			ics[i].start();
 		}
 
-		long result = 0;
-		try {
-			// Wait for the last machine to finish
-			ics[ics.length-1].join();
-			// Get last value of the last machine (assuming the last output is the only output left)
-			ArrayBlockingQueue<Long> resultArray = ics[ics.length-1].getOutputArray();
-			result = resultArray.take();
-		}
+		// Wait for the last machine to finish
+		try { ics[ics.length-1].join();	}
 		catch (Exception e) {
 			System.err.println("Error");
 			System.out.println(e.getMessage());
 		}
+
+		// Get last value of the last machine (assuming the last output is the only output left)
+		ArrayBlockingQueue<Long> resultArray = ics[ics.length-1].getOutputArray();
+		long result = resultArray.peek();
 
 		return result;
 	}

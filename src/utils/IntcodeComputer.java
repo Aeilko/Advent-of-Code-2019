@@ -60,8 +60,6 @@ public class IntcodeComputer {
 		run: while(i < this.stack.length){
 			// Split instruction into digits
 			long tmp = stack[i];
-			//System.out.println("Intcode\t" + tmp);
-			//System.out.println("RelativeBase\t" + this.relativeBase);
 			int length = Long.toString(stack[i]).length();
 			int[] digits = new int[length];
 			for(int j = 0; j < length; j++){
@@ -82,15 +80,15 @@ public class IntcodeComputer {
 			switch(intcode){
 				case 1:
 					// Addition
-					stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = resolveParamValue(modes[0], stack[i+1]) + resolveParamValue(modes[1], stack[i+2]);
+					stack[(int) resolveParamKey(modes[2], stack[i+3])] = resolveParamValue(modes[0], stack[i+1]) + resolveParamValue(modes[1], stack[i+2]);
 					break;
 				case 2:
 					// Multiplication
-					stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = resolveParamValue(modes[0], stack[i+1]) * resolveParamValue(modes[1], stack[i+2]);
+					stack[(int) resolveParamKey(modes[2], stack[i+3])] = resolveParamValue(modes[0], stack[i+1]) * resolveParamValue(modes[1], stack[i+2]);
 					break;
 				case 3:
 					// Read
-					stack[(int) (modes[0] == 2 ? this.relativeBase+stack[i+1] : stack[i+1])] = this.getInput();
+					stack[(int) resolveParamKey(modes[0], stack[i+1])] = this.getInput();
 					break;
 				case 4:
 					// Write
@@ -113,16 +111,16 @@ public class IntcodeComputer {
 				case 7:
 					// Smaller than
 					if(resolveParamValue(modes[0], stack[i+1]) < resolveParamValue(modes[1], stack[i+2]))
-						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 1;
+						stack[(int) resolveParamKey(modes[2], stack[i+3])] = 1;
 					else
-						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 0;
+						stack[(int) resolveParamKey(modes[2], stack[i+3])] = 0;
 					break;
 				case 8:
 					// Equal to
 					if(resolveParamValue(modes[0], stack[i+1]) == resolveParamValue(modes[1], stack[i+2]))
-						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 1;
+						stack[(int) resolveParamKey(modes[2], stack[i+3])] = 1;
 					else
-						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 0;
+						stack[(int) resolveParamKey(modes[2], stack[i+3])] = 0;
 					break;
 				case 9:
 					// Update relative pointer
@@ -148,7 +146,7 @@ public class IntcodeComputer {
 			result = this.inArray.take();
 		}
 		else{
-			// inputMode == 1
+			// Assume inputMode == 1
 			if(!this.silent)
 				System.out.print("Input integer: ");
 			result = in.nextLong();
@@ -162,13 +160,23 @@ public class IntcodeComputer {
 			this.outArray.put(out);
 		}
 		else{
-			// inputMode == 1
+			// Assume inputMode == 1
 			System.out.println(out);
 		}
 	}
 
+	private long resolveParamKey(int mode, long val){
+		long result = 0;
+
+		if(mode == 0)
+			result = val;
+		else
+			result = this.relativeBase+val;
+
+		return result;
+	}
+
 	private long resolveParamValue(int mode, long val){
-		//System.out.print("Resolve \t" + mode +"\t" + val);
 		long result = 0;
 
 		if(mode == 0)
@@ -177,8 +185,6 @@ public class IntcodeComputer {
 			result = val;
 		else if(mode == 2)
 			result = this.stack[this.relativeBase + (int) val];
-
-		//System.out.println("\t" + result);
 
 		return result;
 	}
@@ -208,6 +214,7 @@ public class IntcodeComputer {
 	}
 
 	public static long[] processInput(String def){
+		// Read input and check if the default should be used
 		Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
 		System.out.print("Input Program " + (!def.isEmpty() ? "(or def)" : "") + ": ");
 		String input = in.nextLine();
