@@ -2,11 +2,6 @@ package day2;
 
 import utils.IntcodeComputer;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Scanner;
-
-// TODO: Rewrite solution to use the IntcodeComputer class
 public class Solution {
 
 	public static final int PART1_X = 12;
@@ -40,23 +35,9 @@ public class Solution {
 	}
 
 	public static void main(String[] args){
-		Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+		long[] ogStack = IntcodeComputer.processInput(INPUT);
 
-		// Read the and process input line
-		String input = in.nextLine();
-		// Use default input
-		if(input.equals("def"))
-			input = INPUT;
-
-		// Process input to stack
-		String[] sep = input.split(",");
-		long[] ogStack = new long[sep.length];
 		try {
-			// Parse input to numbers
-			for(int i = 0; i < sep.length; i++){
-				ogStack[i] = Long.parseLong(sep[i]);
-			}
-
 			// Perform part 1 (running the input)
 			long[] stack = ogStack.clone();
 			stack[1] = PART1_X;

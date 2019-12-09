@@ -1,12 +1,10 @@
 package day7;
 
+import utils.IntcodeComputer;
 import utils.IntcodeComputerThread;
 import utils.Permutations;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Solution {
@@ -17,34 +15,23 @@ public class Solution {
 	public static final int[] SETTINGS_PART2 = {5,6,7,8,9};
 
 	public static void main(String[] args){
-		Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+		long[] stack = IntcodeComputer.processInput(PROGRAM);
 
-		String input = in.nextLine();
-		if(input.equals("def"))
-			input = PROGRAM;
-
-		// Process input to stack
-		String[] sep = input.split(",");
-		long[] ogStack = new long[sep.length];
-		for(int i = 0; i < sep.length; i++){
-			ogStack[i] = Long.parseLong(sep[i]);
-		}
-
-		int result = runAllPermutations(ogStack, SETTINGS_PART1);
+		long result = runAllPermutations(stack, SETTINGS_PART1);
 		System.out.println("Part 1 - Success");
 		System.out.println("Answer\t" + result + "\n");
 
-		result = runAllPermutations(ogStack, SETTINGS_PART2);
+		result = runAllPermutations(stack, SETTINGS_PART2);
 		System.out.println("Part 2 - Success");
 		System.out.println("Answer\t" + result);
 	}
 
-	public static int runAllPermutations(long[] program, int[] setting){
+	public static long runAllPermutations(long[] program, int[] setting){
 		ArrayList<int[]> perms = Permutations.getAll(setting);
 
-		int max = 0;
+		long max = 0;
 		for(int i = 0; i < perms.size(); i++) {
-			int result = runThreadedIntcodeSetting(perms.get(i), program);
+			long result = runThreadedIntcodeSetting(perms.get(i), program);
 			if(result > max)
 				max = result;
 		}
@@ -52,17 +39,17 @@ public class Solution {
 		return max;
 	}
 
-	public static int runThreadedIntcodeSetting(int[] setting, long[] program){
+	public static long runThreadedIntcodeSetting(int[] setting, long[] program){
 		IntcodeComputerThread[] ics = new IntcodeComputerThread[setting.length];
-		ArrayBlockingQueue<Integer>[] inputs = new ArrayBlockingQueue[setting.length];
+		ArrayBlockingQueue<Long>[] inputs = new ArrayBlockingQueue[setting.length];
 
 		for(int i = 0; i < ics.length; i++){
 			ics[i] = new IntcodeComputerThread(program);
 			inputs[i] = new ArrayBlockingQueue<>(64);
 			try {
-				inputs[i].put(setting[i]);
+				inputs[i].put((long) setting[i]);
 				if(i == 0)
-					inputs[i].put(0);
+					inputs[i].put(0L);
 			}
 			catch (Exception e){ }
 			ics[i].setInputArray(inputs[i]);
@@ -75,12 +62,12 @@ public class Solution {
 			ics[i].start();
 		}
 
-		int result = 0;
+		long result = 0;
 		try {
 			// Wait for the last machine to finish
 			ics[ics.length-1].join();
 			// Get last value of the last machine (assuming the last output is the only output left)
-			ArrayBlockingQueue<Integer> resultArray = ics[ics.length-1].getOutputArray();
+			ArrayBlockingQueue<Long> resultArray = ics[ics.length-1].getOutputArray();
 			result = resultArray.take();
 		}
 		catch (Exception e) {

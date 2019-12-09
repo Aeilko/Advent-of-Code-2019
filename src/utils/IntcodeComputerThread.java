@@ -10,8 +10,8 @@ public class IntcodeComputerThread extends Thread {
 	// The stack for the Intcode Computer
 	private long[] stack;
 
-	private ArrayBlockingQueue inArray;
-	private ArrayBlockingQueue outArray;
+	private ArrayBlockingQueue<Long> inArray;
+	private ArrayBlockingQueue<Long> outArray;
 
 
 	private boolean silent;
@@ -35,15 +35,15 @@ public class IntcodeComputerThread extends Thread {
 		}
 	}
 
-	public void setInputArray(ArrayBlockingQueue in){
+	public void setInputArray(ArrayBlockingQueue<Long> in){
 		this.inArray = in;
 	}
 
-	public void setOutputArray(ArrayBlockingQueue out){
+	public void setOutputArray(ArrayBlockingQueue<Long> out){
 		this.outArray = out;
 	}
 
-	public ArrayBlockingQueue<Integer> getOutputArray(){
+	public ArrayBlockingQueue<Long> getOutputArray(){
 		return this.outArray;
 	}
 }

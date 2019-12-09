@@ -106,6 +106,7 @@ public class Solution {
 		int blackRGB = Color.BLACK.getRGB();
 		int whiteRGB = Color.WHITE.getRGB();
 
+		// Use *10 scaling to create a better readable image
 		BufferedImage image = new BufferedImage(x*10, y*10, BufferedImage.TYPE_INT_ARGB);
 
 		for(int i = 0; i < y*10; i++){

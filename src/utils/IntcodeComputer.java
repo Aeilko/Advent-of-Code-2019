@@ -81,45 +81,55 @@ public class IntcodeComputer {
 			boolean pointerModified = false;
 			switch(intcode){
 				case 1:
+					// Addition
 					stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = resolveParamValue(modes[0], stack[i+1]) + resolveParamValue(modes[1], stack[i+2]);
 					break;
 				case 2:
+					// Multiplication
 					stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = resolveParamValue(modes[0], stack[i+1]) * resolveParamValue(modes[1], stack[i+2]);
 					break;
 				case 3:
+					// Read
 					stack[(int) (modes[0] == 2 ? this.relativeBase+stack[i+1] : stack[i+1])] = this.getInput();
 					break;
 				case 4:
+					// Write
 					this.setOutput(resolveParamValue(modes[0], stack[i+1]));
 					break;
 				case 5:
+					// If true jump
 					if(resolveParamValue(modes[0], stack[i+1]) != 0){
 						i = (int) resolveParamValue(modes[1], stack[i+2]);
 						pointerModified = true;
 					}
 					break;
 				case 6:
+					// If false jump
 					if(resolveParamValue(modes[0], stack[i+1]) == 0){
 						i = (int) resolveParamValue(modes[1], stack[i+2]);
 						pointerModified = true;
 					}
 					break;
 				case 7:
+					// Smaller than
 					if(resolveParamValue(modes[0], stack[i+1]) < resolveParamValue(modes[1], stack[i+2]))
 						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 1;
 					else
 						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 0;
 					break;
 				case 8:
+					// Equal to
 					if(resolveParamValue(modes[0], stack[i+1]) == resolveParamValue(modes[1], stack[i+2]))
 						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 1;
 					else
 						stack[(int) (modes[2] == 2 ? this.relativeBase+stack[i+3] : stack[i+3])] = 0;
 					break;
 				case 9:
+					// Update relative pointer
 					this.relativeBase += resolveParamValue(modes[0], stack[i+1]);
 					break;
 				case 99:
+					// End
 					break run;
 				default:
 					throw new Exception("Unknown Intcode at ["+i+"]: " + intcode);
@@ -191,5 +201,28 @@ public class IntcodeComputer {
 
 	public void setOutputArray(ArrayBlockingQueue out){
 		this.outArray = out;
+	}
+
+	public static long[] proccessInput(){
+		return processInput("");
+	}
+
+	public static long[] processInput(String def){
+		Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+		System.out.print("Input Program " + (!def.isEmpty() ? "(or def)" : "") + ": ");
+		String input = in.nextLine();
+		if(!def.isEmpty() && input.equals("def"))
+			input = def;
+
+		// Process input to stack
+		String[] sep = input.split(",");
+		long[] stack = new long[sep.length];
+		for(int i = 0; i < sep.length; i++){
+			stack[i] = Long.parseLong(sep[i]);
+		}
+
+		System.out.println();
+
+		return stack;
 	}
 }
