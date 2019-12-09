@@ -8,7 +8,7 @@ public class IntcodeComputerThread extends Thread {
 	private IntcodeComputer ic;
 
 	// The stack for the Intcode Computer
-	private int[] stack;
+	private long[] stack;
 
 	private ArrayBlockingQueue inArray;
 	private ArrayBlockingQueue outArray;
@@ -16,7 +16,7 @@ public class IntcodeComputerThread extends Thread {
 
 	private boolean silent;
 
-	public IntcodeComputerThread(int[] stack){
+	public IntcodeComputerThread(long[] stack){
 		this.stack = stack;
 	}
 

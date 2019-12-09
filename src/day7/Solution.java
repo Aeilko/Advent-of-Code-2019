@@ -25,9 +25,9 @@ public class Solution {
 
 		// Process input to stack
 		String[] sep = input.split(",");
-		int[] ogStack = new int[sep.length];
+		long[] ogStack = new long[sep.length];
 		for(int i = 0; i < sep.length; i++){
-			ogStack[i] = Integer.parseInt(sep[i]);
+			ogStack[i] = Long.parseLong(sep[i]);
 		}
 
 		int result = runAllPermutations(ogStack, SETTINGS_PART1);
@@ -39,7 +39,7 @@ public class Solution {
 		System.out.println("Answer\t" + result);
 	}
 
-	public static int runAllPermutations(int[] program, int[] setting){
+	public static int runAllPermutations(long[] program, int[] setting){
 		ArrayList<int[]> perms = Permutations.getAll(setting);
 
 		int max = 0;
@@ -52,7 +52,7 @@ public class Solution {
 		return max;
 	}
 
-	public static int runThreadedIntcodeSetting(int[] setting, int[] program){
+	public static int runThreadedIntcodeSetting(int[] setting, long[] program){
 		IntcodeComputerThread[] ics = new IntcodeComputerThread[setting.length];
 		ArrayBlockingQueue<Integer>[] inputs = new ArrayBlockingQueue[setting.length];
 

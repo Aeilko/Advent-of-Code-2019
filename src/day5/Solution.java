@@ -22,9 +22,9 @@ public class Solution {
 		// Process input to stack
 		String[] sep = input.split(",");
 		// Parse input to numbers
-		int[] ogStack = new int[sep.length];
+		long[] ogStack = new long[sep.length];
 		for(int i = 0; i < sep.length; i++){
-			ogStack[i] = Integer.parseInt(sep[i]);
+			ogStack[i] = Long.parseLong(sep[i]);
 		}
 
 		// Run code through the Intcode Computer
