@@ -1,6 +1,4 @@
-package day6;
-
-import com.sun.source.tree.Tree;
+package day06;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

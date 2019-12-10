@@ -1,10 +1,4 @@
-package day1;
-
-import utils.ArrayUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Scanner;
+package day01;
 
 public class Solution {
 
