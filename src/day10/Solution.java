@@ -104,7 +104,7 @@ public class Solution {
 		ArrayList<Double> ogAngles = new ArrayList<>(angles.keySet());
 		Collections.sort(ogAngles, Collections.reverseOrder());
 
-		// Start destroying stars
+		// Start destroying androids
 		int lastX = 0;
 		int lastY = 0;
 		int destroyed = 0;
@@ -121,6 +121,8 @@ public class Solution {
 						if (d < distance) {
 							smallestX = c.getX();
 							smallestY = c.getY();
+							// Apparently we also get the correct answer without this line.
+							distance = d;
 						}
 					}
 
