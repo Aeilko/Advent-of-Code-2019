@@ -117,11 +117,10 @@ public class Solution {
 					int smallestX = 0;
 					int smallestY = 0;
 					for (Coordinate c : coords) {
-						int d = Math.abs(c.getX() - stationX);
+						int d = Math.abs(c.getX() - stationX) + Math.abs(c.getY() - stationY);
 						if (d < distance) {
 							smallestX = c.getX();
 							smallestY = c.getY();
-							// Apparently we also get the correct answer without this line.
 							distance = d;
 						}
 					}

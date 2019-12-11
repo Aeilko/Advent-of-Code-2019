@@ -21,6 +21,9 @@ public class IntcodeComputer {
 	// Whether the computer should hide anything but output
 	private boolean silent = false;
 
+	// Whether or not to write a null byte to output array on finish
+	private boolean nullByte = false;
+
 	// Which input & output mode tho use. 1 = System, 2 = BlockingQueue
 	private int inputMode;
 
@@ -128,6 +131,8 @@ public class IntcodeComputer {
 					break;
 				case 99:
 					// End
+					if(this.nullByte && inputMode == 2)
+						setOutput(Long.MIN_VALUE);
 					break run;
 				default:
 					throw new Exception("Unknown Intcode at ["+i+"]: " + intcode);
@@ -200,6 +205,8 @@ public class IntcodeComputer {
 	public void setSilent(){
 		this.silent = true;
 	}
+
+	public void writeNullByte(){ this.nullByte = true; }
 
 	public void setInputArray(ArrayBlockingQueue in){
 		this.inArray = in;

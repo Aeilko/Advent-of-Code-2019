@@ -13,7 +13,6 @@ public class IntcodeComputerThread extends Thread {
 	private ArrayBlockingQueue<Long> inArray;
 	private ArrayBlockingQueue<Long> outArray;
 
-
 	private boolean silent;
 
 	public IntcodeComputerThread(long[] stack){
@@ -23,6 +22,7 @@ public class IntcodeComputerThread extends Thread {
 	public void run(){
 		this.ic = new IntcodeComputer(this.stack, 2);
 		this.ic.setSilent();
+		this.ic.writeNullByte();
 		this.ic.setInputArray(this.inArray);
 		this.ic.setOutputArray(this.outArray);
 

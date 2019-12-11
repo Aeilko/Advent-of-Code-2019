@@ -119,7 +119,7 @@ public class Solution {
 		}
 
 		// Save image
-		File out = new File("src/day8/output.png");
+		File out = new File("src/day08/output.png");
 		try {
 			ImageIO.write(image, "png", out);
 		}
