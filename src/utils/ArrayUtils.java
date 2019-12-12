@@ -34,4 +34,13 @@ public class ArrayUtils {
 		}
 		System.out.print("\n");
 	}
+
+	public static Triplet[] deepCopy(Triplet[] a){
+		Triplet[] r = new Triplet[a.length];
+
+		for(int i = 0; i < a.length; i++)
+			r[i] = a[i].copy();
+
+		return r;
+	}
 }

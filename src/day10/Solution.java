@@ -160,7 +160,7 @@ public class Solution {
 					else if(yStep == 0)
 						xStep = xStep/Math.abs(xStep);
 					// If the steps have a gcd we should decrease the step size
-					int gcd = Math.abs(Euclidean.gcd(xStep, yStep));
+					int gcd = (int) Math.abs(Euclidean.gcd((long) xStep, (long) yStep));
 					if(gcd != 1){
 						xStep = xStep/gcd;
 						yStep = yStep/gcd;

@@ -2,10 +2,10 @@ package utils;
 
 public class Euclidean {
 
-    public static int gcd(int a, int b){
-        int r0;
-        int r1;
-        int r2;
+    public static long gcd(long a, long b){
+        long r0;
+        long r1;
+        long r2;
 
         if(a == b)
             return a;
@@ -26,6 +26,17 @@ public class Euclidean {
         }
 
         return r1;
+    }
+
+    public static long lcm(long a, long b){
+        return (Math.abs(a*b) / gcd(a, b));
+    }
+
+    public static long lcm(int[] a){
+        long lcm = a[0];
+        for(int i = 1; i < a.length; i++)
+            lcm = lcm(lcm, a[i]);
+        return lcm;
     }
 
     public static int inverse(int a, int n){
