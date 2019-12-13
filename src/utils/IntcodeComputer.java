@@ -7,7 +7,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class IntcodeComputer {
 
 	// Maximum size of the stack
-	private int memorySize = 2048;
+	private int memorySize = 4096;
 
 	// The stack used by this Intcode computer
 	private long[] stack;
@@ -39,7 +39,7 @@ public class IntcodeComputer {
 	}
 
 	public IntcodeComputer(long[] s, int mode){
-		this.stack = new long[this.memorySize];
+		this.stack = new long[Math.max(s.length, this.memorySize)];
 		System.arraycopy(s, 0, this.stack, 0, s.length);
 		this.inputMode = mode;
 
