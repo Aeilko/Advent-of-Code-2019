@@ -1,4 +1,4 @@
-package utils;
+package utils.IntcodeComputer;
 
 import java.io.*;
 import java.util.Scanner;

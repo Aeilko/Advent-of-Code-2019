@@ -1,6 +1,6 @@
 package day03;
 
-import utils.Coordinate;
+import utils.Grids.Coordinate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,6 +1,6 @@
 package day09;
 
-import utils.IntcodeComputer;
+import utils.IntcodeComputer.IntcodeComputer;
 
 public class Solution {
 

@@ -1,7 +1,7 @@
 package day13;
 
-import utils.IntcodeComputer;
-import utils.IntcodeComputerThread;
+import utils.IntcodeComputer.IntcodeComputer;
+import utils.IntcodeComputer.IntcodeComputerThread;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

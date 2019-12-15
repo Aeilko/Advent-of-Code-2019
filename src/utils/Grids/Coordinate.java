@@ -1,4 +1,6 @@
-package utils;
+package utils.Grids;
+
+import java.util.Comparator;
 
 public class Coordinate implements Comparable<Coordinate> {
 	// Coordinaten
@@ -19,6 +21,10 @@ public class Coordinate implements Comparable<Coordinate> {
 
 	public int getY(){
 		return this.y;
+	}
+
+	public static int manhattanDistance(Coordinate c1, Coordinate c2){
+		return Math.abs(c1.getX()-c2.getX()) + Math.abs(c1.getY()-c2.getY());
 	}
 	
 	// Override's

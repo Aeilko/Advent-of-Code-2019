@@ -1,4 +1,4 @@
-package utils;
+package utils.Math;
 
 public class Euclidean {
 

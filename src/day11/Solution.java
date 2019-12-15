@@ -1,7 +1,7 @@
 package day11;
 
-import utils.IntcodeComputer;
-import utils.IntcodeComputerThread;
+import utils.IntcodeComputer.IntcodeComputer;
+import utils.IntcodeComputer.IntcodeComputerThread;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

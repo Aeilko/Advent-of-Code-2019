@@ -1,7 +1,7 @@
 package day07;
 
-import utils.IntcodeComputer;
-import utils.IntcodeComputerThread;
+import utils.IntcodeComputer.IntcodeComputer;
+import utils.IntcodeComputer.IntcodeComputerThread;
 import utils.Permutations;
 
 import java.util.ArrayList;

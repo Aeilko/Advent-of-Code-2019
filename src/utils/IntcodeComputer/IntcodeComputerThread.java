@@ -1,4 +1,4 @@
-package utils;
+package utils.IntcodeComputer;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -28,6 +28,9 @@ public class IntcodeComputerThread extends Thread {
 
 		try {
 			this.ic.run();
+		}
+		catch(InterruptedException e){
+			// This is fine
 		}
 		catch(Exception e){
 			System.err.println("Error while running IntcodeComputerThread");

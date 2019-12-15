@@ -1,8 +1,7 @@
 package day10;
 
-import com.sun.source.tree.Tree;
-import utils.Coordinate;
-import utils.Euclidean;
+import utils.Grids.Coordinate;
+import utils.Math.Euclidean;
 
 import java.util.*;
 

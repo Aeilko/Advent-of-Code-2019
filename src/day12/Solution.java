@@ -1,7 +1,7 @@
 package day12;
 
 import utils.ArrayUtils;
-import utils.Euclidean;
+import utils.Math.Euclidean;
 import utils.Triplet;
 
 import java.util.TreeSet;
