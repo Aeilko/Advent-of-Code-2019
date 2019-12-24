@@ -1,6 +1,8 @@
 package utils.IntcodeComputer;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -24,15 +26,24 @@ public class IntcodeComputer {
 	// Whether or not to write a null byte to output array on finish
 	private boolean nullByte = false;
 
-	// Which input & output mode tho use. 1 = System, 2 = BlockingQueue
+	// Which input & output mode tho use. 1 = System, 2 = BlockingQueue, 3 = Network
 	private int inputMode;
 
 	// Potential input scanner
-	Scanner in;
+	private Scanner in;
 
 	// Potential input and output arrays
-	ArrayBlockingQueue<Long> inArray;
-	ArrayBlockingQueue<Long> outArray;
+	private ArrayBlockingQueue<Long> inArray;
+	private ArrayBlockingQueue<Long> outArray;
+
+	// Potential network node
+	private NetworkNode network;
+	private ArrayList<Long> values;
+	private int valuesPerPacket = 2;
+
+	// Thread stopper
+	private boolean stop;
+
 
 	public IntcodeComputer(long[] s){
 		this(s, 1);
@@ -60,7 +71,7 @@ public class IntcodeComputer {
 			this.in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
 
 		int i = 0;
-		run: while(i < this.stack.length){
+		run: while(i < this.stack.length && !this.stop){
 			// Split instruction into digits
 			long tmp = stack[i];
 			int length = Long.toString(stack[i]).length();
@@ -135,7 +146,7 @@ public class IntcodeComputer {
 						setOutput(Long.MIN_VALUE);
 					break run;
 				default:
-					throw new Exception("Unknown Intcode at ["+i+"]: " + intcode);
+					throw new Exception("Unknown Intcode at ["+i+"]: " + stack[i] + ", " + intcode);
 			}
 
 			// Increase pointer
@@ -144,14 +155,26 @@ public class IntcodeComputer {
 		}
 	}
 
-	private long getInput() throws InterruptedException {
-		long result = 0;
+	public void stopThread(){
+		this.stop = true;
+	}
 
-		if(this.inputMode == 2){
+	private long getInput() throws InterruptedException {
+		long result;
+
+		if(this.inputMode == 3){
+			// Network
+			if(this.inArray.peek() == null)
+				result = -1L;
+			else
+				result = this.inArray.take();
+		}
+		else if(this.inputMode == 2){
+			// Array
 			result = this.inArray.take();
 		}
 		else{
-			// Assume inputMode == 1
+			// Assume inputMode == 1, System
 			if(!this.silent)
 				System.out.print("Input integer: ");
 			result = in.nextLong();
@@ -161,7 +184,20 @@ public class IntcodeComputer {
 	}
 
 	private void setOutput(long out) throws InterruptedException {
-		if(this.inputMode == 2){
+		if(this.inputMode == 3){
+			this.values.add(out);
+			if(this.values.size() == this.valuesPerPacket+1){
+				long address = this.values.get(0);
+				NetworkPacket p = new NetworkPacket(address);
+				for(int i = 1; i < this.values.size(); i++)
+					p.addValue(this.values.get(i));
+
+				this.values = new ArrayList<>();
+
+				this.network.sent(p);
+			}
+		}
+		else if(this.inputMode == 2){
 			this.outArray.put(out);
 		}
 		else{
@@ -171,7 +207,7 @@ public class IntcodeComputer {
 	}
 
 	private long resolveParamKey(int mode, long val){
-		long result = 0;
+		long result;
 
 		if(mode == 0)
 			result = val;
@@ -208,12 +244,21 @@ public class IntcodeComputer {
 
 	public void writeNullByte(){ this.nullByte = true; }
 
-	public void setInputArray(ArrayBlockingQueue in){
+	public void setInputArray(ArrayBlockingQueue<Long> in){
 		this.inArray = in;
 	}
 
-	public void setOutputArray(ArrayBlockingQueue out){
+	public ArrayBlockingQueue<Long> getInputArray(){
+		return this.inArray;
+	}
+
+	public void setOutputArray(ArrayBlockingQueue<Long> out){
 		this.outArray = out;
+	}
+
+	public void setNetwork(NetworkNode network) {
+		this.network = network;
+		this.values = new ArrayList<>();
 	}
 
 	public static long[] proccessInput(){
