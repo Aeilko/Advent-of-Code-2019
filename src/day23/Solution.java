@@ -52,14 +52,65 @@ public class Solution {
 			e.printStackTrace();
 		}
 
+		// Stop all ICs
+		for(int i = 0; i < ics.length; i++)
+			ics[i].stopThread();
+		// Stop the network node
+		nn.stopThread();
+
 		System.out.println("Part 1 - Success");
 		System.out.println("Answer\t" + y + "\n");
 
+
+		nn = new NetworkNode();
+		nn.useNAT();
+		// Create all ICs and assign network addresses
+		for(int i = 0; i < 50; i++){
+			ics[i] = new IntcodeComputerThread(stack, 3);
+			ics[i].setNetwork(i, nn);
+			try {
+				ics[i].getInputArray().put((long) i);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Create our custom catch-255 IC, but this time on address 254
+		out = new ArrayBlockingQueue<>(64);
+		tmpIC = new IntcodeComputer(stack, 2);
+		tmpIC.setInputArray(out);
+		nn.registerIC(254, tmpIC);
+
+		// Start our network
+		nn.start();
+		try {
+			// Wait for the node to start
+			Thread.sleep(100);
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		for(int i = 0; i < 50; i++){
+			ics[i].start();
+		}
+
+		// Wait for packet on address 254
+		y = 0;
+		try {
+			y = out.take();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		// Stop all ICs
 		for(int i = 0; i < ics.length; i++)
 			ics[i].stopThread();
 		// Stop the network node
 		nn.stopThread();
+
+		System.out.println("Part 2 - Success");
+		System.out.println("Answer\t" + y);
 	}
 }

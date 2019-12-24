@@ -15,6 +15,13 @@ public class NetworkNode extends Thread {
 	// The input arrays for the ICs
 	private TreeMap<Long, ArrayBlockingQueue<Long>> network;
 
+	// Network NAT
+	private boolean useNAT;
+	private NetworkNAT NAT;
+
+	// Last activity of the network
+	private long lastActive;
+
 	// Thread stopper
 	private boolean stop;
 
@@ -40,35 +47,64 @@ public class NetworkNode extends Thread {
 		this.packets.put(p);
 	}
 
+	public long getActivity(){
+		if(this.packets.size() > 0)
+			return -1;
+		else
+			return this.lastActive;
+	}
+
+	public void useNAT(){
+		this.useNAT = true;
+	}
+
 	public void run(){
 		this.packets = new ArrayBlockingQueue<>(256);
 		this.waiting = new TreeMap<>();
+		if(this.useNAT) {
+			this.lastActive = System.currentTimeMillis();
+			this.NAT = new NetworkNAT(this);
+			this.NAT.start();
+		}
 
 		try {
 			while(!this.stop){
 				NetworkPacket p = this.packets.take();
 				long addr = p.getTo();
 
-				if(network.containsKey(addr)){
-					ArrayBlockingQueue<Long> in = network.get(addr);
+				if(this.useNAT && addr == 255){
 					for(long l: p.getValues())
-						in.put(l);
+						this.NAT.getQueue().put(l);
 				}
-				else{
-					// Address currently unavailable, add it to the waiting list
-					if(!this.waiting.containsKey(addr))
-						this.waiting.put(addr, new ArrayList<>());
-					this.waiting.get(addr).add(p);
+				else {
+					if (this.network.containsKey(addr)) {
+						ArrayBlockingQueue<Long> in = this.network.get(addr);
+						for (long l : p.getValues())
+							in.put(l);
+					}
+					else {
+						// Address currently unavailable, add it to the waiting list
+						if (!this.waiting.containsKey(addr))
+							this.waiting.put(addr, new ArrayList<>());
+						this.waiting.get(addr).add(p);
+					}
 				}
+
+				// Update network activity
+				this.lastActive = System.currentTimeMillis();
 			}
 		}
 		catch (InterruptedException e) {
 			// This is fine
+			if(this.useNAT)
+				this.NAT.stopThread();
 		}
 	}
 
 	public void stopThread(){
 		this.stop = true;
 		this.interrupt();
+		if(this.useNAT)
+			this.NAT.stopThread();
 	}
 }

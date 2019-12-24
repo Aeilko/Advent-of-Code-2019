@@ -50,7 +50,6 @@ public class IntcodeComputerThread extends Thread {
 		}
 		catch(InterruptedException e){
 			// This is fine
-			System.out.println("Interrupted");
 		}
 		catch(Exception e){
 			System.err.println("Error while running IntcodeComputerThread");
