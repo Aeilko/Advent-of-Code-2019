@@ -9,7 +9,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class IntcodeComputer {
 
 	// Maximum size of the stack
-	private int memorySize = 4096;
+	private int memorySize = 6000;
 
 	// The stack used by this Intcode computer
 	private long[] stack;
